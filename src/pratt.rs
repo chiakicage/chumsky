@@ -145,11 +145,21 @@ pub trait InfixOperator<Expr> {
 }
 
 /// See [`Parser::pratt`].
-#[derive(Copy, Clone)]
+// #[derive(Copy, Clone)]
 pub struct Pratt<Extra, AtomParser, Expr, OpParser, Op> {
     pub(crate) parser_op: OpParser,
     pub(crate) parser_atom: AtomParser,
     pub(crate) phantom: PhantomData<(Extra, Expr, Op)>,
+}
+
+impl<E, AtomParser: Clone, Expr, OpParser: Clone, Op> Clone for Pratt<E, AtomParser, Expr, OpParser, Op> {
+    fn clone(&self) -> Self {
+        Self {
+            parser_op: self.parser_op.clone(),
+            parser_atom: self.parser_atom.clone(),
+            phantom: PhantomData,
+        }
+    }
 }
 
 impl<E, AtomParser, Expr, OpParser, Op> Pratt<E, AtomParser, Expr, OpParser, Op> {
